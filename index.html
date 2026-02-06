@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Love</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.min.js"></script>
+    <style>
+        :root {
+            --primary-red: #ff4d6d;
+            --soft-pink: #ffccd5;
+            --dark-love: #590d22;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: #000; color: white;
+            overflow-x: hidden;
+        }
+
+        /* --- Password Screen --- */
+        #login-screen {
+            position: fixed; inset: 0; background: radial-gradient(circle, #2b0303 0%, #000 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1000; transition: opacity 1s ease;
+        }
+
+        .pass-box {
+            text-align: center; width: 80%;
+        }
+
+        .pass-box h2 { font-family: 'Dancing Script', cursive; color: var(--primary-red); font-size: 2rem; }
+
+        input {
+            padding: 12px; width: 100%; border-radius: 25px; border: 2px solid var(--primary-red);
+            background: transparent; color: white; text-align: center; font-size: 1.2rem; outline: none;
+            margin-top: 20px;
+        }
+
+        /* --- Main Content (Hidden Initially) --- */
+        #main-content { display: none; opacity: 0; transition: opacity 2s ease; }
+
+        .section {
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box; text-align: center;
+        }
+
+        /* --- Slideshow --- */
+        .slideshow-container {
+            position: relative; width: 90vw; height: 60vh;
+            border: 4px solid var(--soft-pink); border-radius: 20px; overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+        }
+
+        .slide {
+            position: absolute; inset: 0; opacity: 0; transition: opacity 1.5s ease-in-out;
+            background-size: cover; background-position: center;
+        }
+
+        .slide.active { opacity: 1; }
+
+        /* --- Text Animations --- */
+        .typing-container { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--soft-pink); margin: 20px 0; min-height: 100px; }
+
+        .shayari { font-style: italic; color: #fff; line-height: 1.6; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; }
+
+        /* --- Interactive Buttons --- */
+        .btn-container { position: relative; width: 100%; height: 150px; margin-top: 30px; }
+
+        .btn {
+            padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; font-size: 1.1rem;
+            position: absolute; cursor: pointer; transition: 0.3s;
+        }
+
+        #yes-btn { background: #2ecc71; color: white; left: 10%; }
+        #no-btn { background: #e74c3c; color: white; right: 10%; }
+
+        /* --- Floating Hearts --- */
+        .heart { position: fixed; color: var(--primary-red); font-size: 20px; user-select: none; pointer-events: none; z-index: 99; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="playMusic()">
+
+    <div id="login-screen">
+        <div class="pass-box">
+            <h2>Unlock My Heart</h2>
+            <p style="color: #ffccd5;">Enter Your Birthday Date Love (ddmmyyyy)</p>
+            <input type="password" id="passInput" placeholder="••••••••" maxlength="8">
+            <p id="error" style="color: var(--primary-red); font-size: 0.8rem; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div class="section">
+            <h1 style="font-family: 'Dancing Script'; font-size: 3rem; color: var(--primary-red);">This one for You Miss India</h1>
+            <div class="typing-container" id="typewriter"></div>
+            
+            <div class="shayari">
+                "In the book of my life, every chapter starts with you.<br>
+                If I had a flower for every time I thought of you,<br>
+                I could walk through my garden forever."
+            </div>
+            
+            <p style="margin-top: 40px; font-weight: 300;">Scroll down, my Love... 🌹</p>
+        </div>
+
+        <div class="section">
+            <div class="slideshow-container" id="slideshow">
+                <div class="slide active" style="background-image: url('https://via.placeholder.com/400x600?text=Photo+1')"></div>
+                <div class="slide" style="background-image: url('https://via.placeholder.com/400x600?text=Photo+2')"></div>
+                <div class="slide" style="background-image: url('https://via.placeholder.com/400x600?text=Photo+3')"></div>
+            </div>
+            <p style="margin-top: 20px; font-family: 'Dancing Script';">Every moment with you is a treasure.</p>
+        </div>
+
+        <div class="section" id="final-section">
+            <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem;">One Last Thing...</h2>
+            <p>1. Will you be my Wife?</p>
+            <p>2. Will you be my Valentine?</p>
+            
+            <div class="btn-container">
+                <button class="btn" id="yes-btn" onclick="celebrate()">YES!</button>
+                <button class="btn" id="no-btn" onmouseover="moveNo()">No</button>
+            </div>
+            
+            <p style="font-size: 0.7rem; color: #666; margin-top: 50px;">From Your Love ~ Adityaa</p>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.myinstants.com/media/sounds/him-and-i-lyrics.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const passInput = document.getElementById('passInput');
+        let tapCount = 0;
+
+        // Password Logic
+        passInput.addEventListener('input', (e) => {
+            if (e.target.value === '04102007') {
+                document.getElementById('login-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                    setTimeout(() => { document.getElementById('main-content').style.opacity = '1'; }, 100);
+                    startSlideshow();
+                    startTypewriter();
+                }, 1000);
+            }
+        });
+
+        // Secret Tap Logic
+        window.addEventListener('click', () => {
+            tapCount++;
+            if (tapCount === 5) alert("I love you more than words can say, Adityaa's Queen!");
+        });
+
+        // Slideshow Logic
+        function startSlideshow() {
+            const slides = document.querySelectorAll('.slide');
+            let current = 0;
+            setInterval(() => {
+                slides[current].classList.remove('active');
+                current = (current + 1) % slides.length;
+                slides[current].classList.add('active');
+            }, 3500);
+        }
+
+        // Typewriter Effect
+        function startTypewriter() {
+            const text = "To the most beautiful girl in the world... my Miss India. You are my cross my heart, hope to die... my everything.";
+            let i = 0;
+            const target = document.getElementById('typewriter');
+            function type() {
+                if (i < text.length) {
+                    target.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 100);
+                }
+            }
+            type();
+        }
+
+        // Move No Button
+        function moveNo() {
+            const noBtn = document.getElementById('no-btn');
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+            noBtn.innerText = "How could you say No? 🥺";
+        }
+
+        // Celebration
+        function celebrate() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            document.getElementById('final-section').innerHTML = `
+                <h1 style="font-family:'Dancing Script'; color:var(--primary-red); font-size:4rem;">Hurrahh!!!</h1>
+                <p style="font-size:1.5rem;">Thank you Love! ❤️</p>
+                <p>You've made me the happiest man alive.</p>
+                <p style="margin-top:20px;">- Adityaa</p>
+            `;
+        }
+
+        // Music Play on first interaction (Browser requirement)
+        function playMusic() {
+            const music = document.getElementById('bgMusic');
+            music.play().catch(() => {});
+        }
+
+        // Floating Hearts Animation
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animation = `float ${Math.random() * 3 + 2}s linear forwards`;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }, 400);
+    </script>
+</body>
+</html>
